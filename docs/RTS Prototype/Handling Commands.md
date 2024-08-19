@@ -4,6 +4,19 @@ I wanted to create a system that would allow me to define commands in a way that
 
 ![[20240819212005.png]]
 
+
+## The Idea
+
+A command scriptable object is used to manage the visuals for each command, as well as hold an event that units can subscribe to if they are ready to respond to that event.
+
+This command object can then be bound to the UI.
+
+Another scriptable object, the Command Template is used to define what order the commands should be in the UI.
+
+A unit has a reference to a Command Template, which will display the attached commands when the unit is selected. The unit will also have a script that subscribes to each command and implements some code to execute when the command is pressed.
+
+![[20240820003741.png]]
+
 ## How Adding a New Command Works
 ### Create a new command object
 
