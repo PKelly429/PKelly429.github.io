@@ -46,7 +46,7 @@ In this case the command scriptable object needs to be attached to the script. T
 
 ### Finished
 
-![](https://youtu.be/78B3ssbF9j4)
+![[20240819235121.png]]
 
 ## Implementation
 
@@ -285,6 +285,3 @@ public class CommandBinder : AbstractBinder
 }
 ```
 
-### Moving some commands around
-
-![](https://youtu.be/HBjQmdD_CoU)
