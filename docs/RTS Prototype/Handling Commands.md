@@ -40,11 +40,13 @@ public class DebugCommandListener : MonoBehaviour, ICommandRegister
 }
 ```
 
-In this case the command scriptable object needs to be attached to the script. This could also be configured globally (e.g. In a static singleton with reference to all commands).
+Attach script to our unit and configure the command scriptable object. This could also be configured globally (e.g. In a static singleton with reference to all commands).
 
 ![[20240819214418.png]]
 
 ### Finished
+
+This command could now be assigned to multiple units, and easily moved to a new position.
 
 ![[20240819235121.png]]
 
@@ -147,10 +149,11 @@ private void HandlePositionCommand(Ray ray)
 
 ```
 
+When this command is executed, the next click will order the unit to move to that position.
 
 ### Command Template
 
-This is attached to each unit, and determines which commands should be shown when they are selected
+This is attached to a script on each unit, and determines which commands should be shown when they are selected
 
 ```c#
 [CreateAssetMenu(menuName = "Command/Command Template")]  
@@ -164,7 +167,9 @@ public class CommandTemplate : ScriptableObject
 
 ### The Units
 
-The units are configured with a number of scripts with the ICommandRegister interface
+![[20240819235859.png]]
+
+The units are configured with a number of scripts with the ICommandRegister interface. MoveableEntity implements the Move and Stop commands.
 
 ```c#
 public interface ICommandRegister  
@@ -174,7 +179,7 @@ public interface ICommandRegister
 }
 ```
 
-They gather a reference to all scripts with this interface and when selected, they register to all commands.
+The Selectable Object script gathers a reference to all scripts with this interface and when selected, they register to all commands.
 
 ```c#
 [SerializeField] private CommandTemplate commands;
