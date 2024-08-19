@@ -1,11 +1,13 @@
-I wanted to create a system that would allow units and buildings to define commands that would appear in the UI and would be easily configurable.
+In most RTS games, clicking on a unit will display commands unique to that unit.
 
-I want to be able to define common commands such as Move, Stop, Attack etc. Then allow units to decide which commands they have access to.
+I wanted to create a system that would allow me to define commands in a way that would be easily configurable.
 
 ![[20240819212005.png]]
 
-## How to Set Up a New Command
+## How Adding a New Command Works
 ### Create a new command object
+
+Use the Create menu to create a new scriptable object and assign images for the button.
 
 ![[20240819213747.png]]
 
@@ -13,7 +15,7 @@ I want to be able to define common commands such as Move, Stop, Attack etc. Then
 
 ![[20240819213945.png]]
 
-### Write code for units to implement event
+### Write Code for Units to Implement Command
 
 ```c#
 public class DebugCommandListener : MonoBehaviour, ICommandRegister 
@@ -37,12 +39,15 @@ In this case the command scriptable object needs to be attached to the script. T
 
 ![[20240819214418.png]]
 
-### Test
+### Finished
+
 ![[20240819-2050-57.0214862.mp4]]
 
 ## Implementation
 
-###The Command Scriptable Object
+### The Command Scriptable Object
+
+First there is the BaseCommand script that defines the images and an Execute Method. The Execute Method will be called by the UI when the button is clicked (or a hotkey pressed).
 
 ```c#
 [Serializable]  
@@ -54,6 +59,12 @@ public abstract class BaseCommand : ScriptableObject
 }
 ```
 
+Next there are two overrides, the regular command for simple actions (such as the Debug Command created here) and a generic command that can be used to create more complex commands requiring data. The Move command for example takes a Vector3.
+
+These scripts define an event that can be subscribed to. When a unit is selected it subscribes to all commands it has been configured for.
+
+The simple command immediately calls the event when pressed.
+
 ```c#
 [CreateAssetMenu(menuName="Command/Command")]  
 public class Command : BaseCommand  
@@ -64,7 +75,8 @@ public class Command : BaseCommand
   
     public override void Execute()  
     {        OnExecute.Invoke();  
-    }        public void Register(ExecuteCommand action) => OnExecute += action;  
+    }        
+    public void Register(ExecuteCommand action) => OnExecute += action;  
     public void Deregister(ExecuteCommand action) => OnExecute -= action;  
 }  
   
@@ -73,12 +85,196 @@ public abstract class Command<T> : BaseCommand
     private event ExecuteCommand OnExecute = (value) => { };  
   
     public delegate void ExecuteCommand(T value);  
+
+	// Does not implment Execute()
+	// Any implementation still needs to implement this method
   
-    public void Execute(T value)  
+    public void ExecuteWithValue(T value)  
     {        OnExecute.Invoke(value);  
-    }        public void Register(ExecuteCommand action) => OnExecute += action;  
+    }        
+    public void Register(ExecuteCommand action) => OnExecute += action;  
     public void Deregister(ExecuteCommand action) => OnExecute -= action;  
 }
 ```
 
 
+### Position Commands
+
+The Move command is setup as a Position Command which requires a Vector3.
+
+```c#
+[CreateAssetMenu(menuName = "Command/Position Command")]  
+public class Vector3Command : Command<Vector3>  
+{  
+    public override void Execute()  
+    {        
+	    SceneReferences.Instance.inputHandler.SetCommand(this);  
+    }
+}
+```
+
+Rather than immediately invoke the OnExecute event, it first makes a call to the Input Handler.
+
+```c#
+public void SetCommand(Vector3Command command)  
+{  
+    HasTargetCommand = true;  
+    currentTargetCommand = command;  
+}
+
+...
+
+// Called in Update if HasTargetCommand and mouse pressed this frame
+private void HandlePositionCommand(Ray ray) 
+{      
+    int hits = Physics.RaycastNonAlloc(ray.origin, ray.direction, _hits, MaxDistance, groundLayers);  
+  
+    if (hits > 0)  
+    {
+	    currentTargetCommand.ExecuteWithValue(_hits[0].point);  
+    }    
+    
+    HasTargetCommand = false;  
+    currentTargetCommand = null;  
+}
+
+```
+
+
+### Command Template
+
+This is attached to each unit, and determines which commands should be shown when they are selected
+
+```c#
+[CreateAssetMenu(menuName = "Command/Command Template")]  
+public class CommandTemplate : ScriptableObject 
+{   
+    public BaseCommand[] commandRow1 = new BaseCommand[5];  
+    public BaseCommand[] commandRow2 = new BaseCommand[5];  
+    public BaseCommand[] commandRow3 = new BaseCommand[5];  
+}
+```
+
+### The Units
+
+The units are configured with a number of scripts with the ICommandRegister interface
+
+```c#
+public interface ICommandRegister  
+{  
+    public void Register();  
+    public void Deregister();  
+}
+```
+
+They gather a reference to all scripts with this interface and when selected, they register to all commands.
+
+```c#
+[SerializeField] private CommandTemplate commands;
+
+private ICommandRegister[] commandListeners;  
+  
+private void Start()  
+{  
+    commandListeners = GetComponents<ICommandRegister>();  
+}  
+  
+private void RegisterCommands()  
+{  
+    SceneReferences.Instance.commandButtonGrid.Bind(commands);  
+    foreach (var commandListener in commandListeners)  
+    {        commandListener.Register();  
+    }}  
+  
+private void DeregisterCommands()  
+{  
+    foreach (var commandListener in commandListeners)  
+    {        commandListener.Deregister();  
+    }
+}
+
+public void OnSelect()  
+{  
+    ...
+
+	// This is a temporary measure to tell the UI to use this units commands
+	// When multiple units can be selected at once this will need a system to
+	// handle combining templates from all selected units
+	SceneReferences.Instance.commandButtonGrid.Bind(commands);
+	
+    RegisterCommands();  
+}  
+  
+public void OnDeselect()  
+{  
+    ...
+    DeregisterCommands();  
+}
+```
+
+### The UI
+
+Finally the UI has a list of button objects and iterates through each of them, binding them to the corresponding Command.
+
+```c#
+public void Bind(CommandTemplate unitCommands)  
+{  
+    if (unitCommands == null)  
+    {        
+	    Unbind();  
+        return;  
+    }    
+    int next = 0;  
+    for (int i = 0; i < unitCommands.commandRow1.Length; i++)  
+    {        
+	    commandBinders[next].Bind(unitCommands.commandRow1[i]);  
+        next++;    
+    }    
+    for (int i = 0; i < unitCommands.commandRow2.Length; i++)  
+    {        
+	    commandBinders[next].Bind(unitCommands.commandRow2[i]);  
+        next++;    
+    }    
+    for (int i = 0; i < unitCommands.commandRow3.Length; i++)  
+    {        
+	    commandBinders[next].Bind(unitCommands.commandRow3[i]);  
+        next++;    
+    }
+}
+```
+
+```c#
+public class CommandBinder : AbstractBinder  
+{  
+    [SerializeField] private Button button;  
+    [SerializeField] private Image icon;  
+    [SerializeField] private HighlightOnHover hover;  
+    
+    public override void Bind(object obj)  
+    {        
+	    Unbind();  
+        if (obj == null) return;  
+        BaseCommand command = (BaseCommand)obj;  
+        if (command == null) return;
+           
+        icon.enabled = true;  
+        icon.sprite = command.image;
+        
+        button.enabled = true;  
+        button.onClick.AddListener(command.Execute); 
+        
+        hover.SetSprites(command.image, command.imageHover);  
+    }  
+    
+    protected override void Unbind()  
+    {        
+	    icon.enabled = false;  
+	    button.enabled = false;  
+        button.onClick.RemoveAllListeners();  
+    }
+}
+```
+
+### Moving some commands around
+
+![[20240819-2215-35.5363657.mp4]]
