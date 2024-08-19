@@ -46,17 +46,8 @@ In this case the command scriptable object needs to be attached to the script. T
 
 ### Finished
 
-<iframe width="420" height="315"
-  src="https://youtu.be/78B3ssbF9j4">
-</iframe>
+![](https://youtu.be/78B3ssbF9j4)
 
-
-<video width="320" height="240" controls>
-  <source src="video.mp4" type="video/mp4">
-</video>
-
-
-![[video.mp4]]
 ## Implementation
 
 ### The Command Scriptable Object
@@ -296,4 +287,4 @@ public class CommandBinder : AbstractBinder
 
 ### Moving some commands around
 
-![[20240819-2215-35.5363657.mp4]]
+![](https://youtu.be/HBjQmdD_CoU)
