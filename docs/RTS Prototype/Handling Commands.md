@@ -13,9 +13,11 @@ Use the Create menu to create a new scriptable object and assign images for the 
 
 ## Add to template
 
+Different units can have different templates
+
 ![[20240819213945.png]]
 
-### Write Code for Units to Implement Command
+### Write Code for Units to Implement the Command
 
 ```c#
 public class DebugCommandListener : MonoBehaviour, ICommandRegister 
@@ -23,14 +25,17 @@ public class DebugCommandListener : MonoBehaviour, ICommandRegister
     [SerializeField] Command command;  
     
     public void Register()  
-    {        command.Register(RespondToDebugCommand);  
+    {        
+	    command.Register(RespondToDebugCommand);  
     }  
     public void Deregister()  
-    {        command.Deregister(RespondToDebugCommand);  
+    {        
+	    command.Deregister(RespondToDebugCommand);  
     }
       
     public void RespondToDebugCommand()  
-    {        Debug.Log("Unit has received debug command");  
+    {        
+	    Debug.Log("Unit has received debug command");  
     }
 }
 ```
@@ -41,7 +46,11 @@ In this case the command scriptable object needs to be attached to the script. T
 
 ### Finished
 
-![[20240819-2050-57.0214862.mp4]]
+<video controls>
+<source src="../video.mp4" type="video/mp4">
+</video>
+
+![[../video.mp4]]
 
 ## Implementation
 
@@ -74,7 +83,8 @@ public class Command : BaseCommand
     public delegate void ExecuteCommand();  
   
     public override void Execute()  
-    {        OnExecute.Invoke();  
+    {        
+	    OnExecute.Invoke();  
     }        
     public void Register(ExecuteCommand action) => OnExecute += action;  
     public void Deregister(ExecuteCommand action) => OnExecute -= action;  
@@ -90,7 +100,8 @@ public abstract class Command<T> : BaseCommand
 	// Any implementation still needs to implement this method
   
     public void ExecuteWithValue(T value)  
-    {        OnExecute.Invoke(value);  
+    {        
+	    OnExecute.Invoke(value);  
     }        
     public void Register(ExecuteCommand action) => OnExecute += action;  
     public void Deregister(ExecuteCommand action) => OnExecute -= action;  
@@ -183,13 +194,16 @@ private void RegisterCommands()
 {  
     SceneReferences.Instance.commandButtonGrid.Bind(commands);  
     foreach (var commandListener in commandListeners)  
-    {        commandListener.Register();  
-    }}  
+    {        
+		commandListener.Register();  
+    }
+}  
   
 private void DeregisterCommands()  
 {  
     foreach (var commandListener in commandListeners)  
-    {        commandListener.Deregister();  
+    {        
+	    commandListener.Deregister();  
     }
 }
 
