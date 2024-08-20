@@ -11,9 +11,9 @@ A command scriptable object is used to manage the visuals for each command, as w
 
 This command object can then be bound to the UI.
 
-Another scriptable object, the Command Template is used to define what order the commands should be in the UI.
+Another scriptable object, the Command Template is used to define what commands a unit has and their order in the UI.
 
-A unit has a reference to a Command Template, which will display the attached commands when the unit is selected. The unit will also have a script that subscribes to each command and implements some code to execute when the command is pressed.
+A unit has a reference to a Command Template, along with scripts that subscribe to each command and implement some code to execute when that command is pressed.
 
 ![[20240820003741.png]]
 
@@ -24,9 +24,7 @@ Use the Create menu to create a new scriptable object and assign images for the 
 
 ![[20240819213747.png]]
 
-## Add to template
-
-Different units can have different templates
+## Add to a Template
 
 ![[20240819213945.png]]
 
@@ -79,9 +77,9 @@ public abstract class BaseCommand : ScriptableObject
 }
 ```
 
-Next there are two overrides, the regular command for simple actions (such as the Debug Command created here) and a generic command that can be used to create more complex commands requiring data. The Move command for example takes a Vector3.
+Next there are two implementations, a regular command for simple actions (such as the Debug Command created here) and a generic command that can be used to create more complex commands requiring data. The Move command for example is a Command\<Vector3\>.
 
-These scripts define an event that can be subscribed to. When a unit is selected it subscribes to all commands it has been configured for.
+These scripts contain an event that can be subscribed to. When a unit is selected it subscribes to all commands it has been configured for. This allows all selected units to respond to a command.
 
 The simple command immediately calls the event when pressed.
 
@@ -122,7 +120,7 @@ public abstract class Command<T> : BaseCommand
 
 ### Position Commands
 
-The Move command is setup as a Position Command which requires a Vector3.
+The Move command is an instance of this Position Command, which requires a Vector3.
 
 ```c#
 [CreateAssetMenu(menuName = "Command/Position Command")]  
@@ -136,6 +134,7 @@ public class Vector3Command : Command<Vector3>
 ```
 
 Rather than immediately invoke the OnExecute event, it first makes a call to the Input Handler.
+When the command is executed, the next click will order the unit to move to that position.
 
 ```c#
 public void SetCommand(Vector3Command command)  
@@ -162,7 +161,6 @@ private void HandlePositionCommand(Ray ray)
 
 ```
 
-When this command is executed, the next click will order the unit to move to that position.
 
 ### Command Template
 
@@ -272,17 +270,15 @@ public void Bind(CommandTemplate unitCommands)
 ```
 
 ```c#
-public class CommandBinder : AbstractBinder  
+public class CommandBinder : MonoBehaviour  
 {  
     [SerializeField] private Button button;  
     [SerializeField] private Image icon;  
-    [SerializeField] private HighlightOnHover hover;  
+    [SerializeField] private HighlightOnHover hover; //switches icon when hovered 
     
-    public override void Bind(object obj)  
+    public void Bind(BaseCommand command)  
     {        
 	    Unbind();  
-        if (obj == null) return;  
-        BaseCommand command = (BaseCommand)obj;  
         if (command == null) return;
            
         icon.enabled = true;  
@@ -294,7 +290,7 @@ public class CommandBinder : AbstractBinder
         hover.SetSprites(command.image, command.imageHover);  
     }  
     
-    protected override void Unbind()  
+    protected void Unbind()  
     {        
 	    icon.enabled = false;  
 	    button.enabled = false;  
