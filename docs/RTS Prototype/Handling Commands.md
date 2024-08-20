@@ -24,7 +24,7 @@ Use the Create menu to create a new scriptable object and assign images for the 
 
 ![[20240819213747.png]]
 
-## Add to a Template
+### Add to a Template
 
 ![[20240819213945.png]]
 
@@ -162,7 +162,7 @@ private void HandlePositionCommand(Ray ray)
 ```
 
 
-### Command Template
+### Command Templates
 
 This is attached to a script on each unit, and determines which commands should be shown when they are selected
 
@@ -238,7 +238,7 @@ public void OnDeselect()
 }
 ```
 
-### The UI
+### UI
 
 Finally the UI has a list of button objects and iterates through each of them, binding them to the corresponding Command.
 
