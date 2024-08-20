@@ -4,16 +4,15 @@ I wanted to create a system that would allow me to define commands in a way that
 
 ![[20240819212005.png]]
 
-
 ## The Idea
 
-A command scriptable object is used to manage the visuals for each command, as well as hold an event that units can subscribe to if they are ready to respond to that event.
+A Command scriptable object is used to manage the visuals for each Command, as well as hold an event that units can subscribe to if they are ready to respond to that event.
 
 This command object can then be bound to the UI.
 
-Another scriptable object, the Command Template is used to define what commands a unit has and their order in the UI.
+Another scriptable object, the Command Template is used to define what Commands a unit has and their order in the UI.
 
-A unit has a reference to a Command Template, along with scripts that subscribe to each command and implement some code to execute when that command is pressed.
+A unit has a reference to a Command Template, along with scripts that subscribe to each Command and implement some code to execute when that Command is pressed.
 
 ![[20240820003741.png]]
 
@@ -65,7 +64,7 @@ This command could now be assigned to multiple units, and easily moved to a new 
 
 ### The Command Scriptable Object
 
-First there is the BaseCommand script that defines the images and an Execute Method. The Execute Method will be called by the UI when the button is clicked (or a hotkey pressed).
+First there is the `BaseCommand` script that defines the images and an Execute Method. The Execute Method will be called by the UI when the button is clicked (or a hotkey pressed).
 
 ```c#
 [Serializable]  
@@ -77,7 +76,7 @@ public abstract class BaseCommand : ScriptableObject
 }
 ```
 
-Next there are two implementations, a regular command for simple actions (such as the Debug Command created here) and a generic command that can be used to create more complex commands requiring data. The Move command for example is a Command\<Vector3\>.
+Next there are two implementations, a regular command for simple actions (such as the Debug Command created here) and a generic command that can be used to create more complex commands requiring data. The Move command for example is a `Command<Vector3>`.
 
 These scripts contain an event that can be subscribed to. When a unit is selected it subscribes to all commands it has been configured for. This allows all selected units to respond to a command.
 
@@ -133,7 +132,7 @@ public class Vector3Command : Command<Vector3>
 }
 ```
 
-Rather than immediately invoke the OnExecute event, it first makes a call to the Input Handler.
+Rather than immediately invoke the `OnExecute` event, it first makes a call to the Input Handler.
 When the command is executed, the next click will order the unit to move to that position.
 
 ```c#
@@ -180,7 +179,7 @@ public class CommandTemplate : ScriptableObject
 
 ![[20240819235859.png]]
 
-The units are configured with a number of scripts with the ICommandRegister interface. MoveableEntity implements the Move and Stop commands.
+The units are configured with a number of scripts with the `ICommandRegister` interface. `MoveableEntity` implements the Move and Stop commands.
 
 ```c#
 public interface ICommandRegister  
