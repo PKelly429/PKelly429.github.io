@@ -4,12 +4,13 @@ Script for an attribute that automatically assigns a GUID to a string field on a
 ## Usage
 
 ```c#
-public class SomeObject : ScriptableObject  
+public class UniqueObject : ScriptableObject  
 {
-	[ScriptableObjectId] [ReadOnly] public string objectId;
+	[ScriptableObjectId] public string objectId;
 }
 ```
 
+![[20240822174336.png]]
 ## Code
 
 ```c#
