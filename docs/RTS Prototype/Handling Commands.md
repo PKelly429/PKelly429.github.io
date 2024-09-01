@@ -4,7 +4,7 @@ I wanted to create a system that would allow me to define commands in a way that
 
 ![[20240819212005.png]]
 
-## The Idea
+# The Idea
 
 A Command scriptable object is used to manage the visuals for each Command, as well as hold an event that units can subscribe to if they are ready to respond to that event.
 
@@ -16,18 +16,18 @@ A unit has a reference to a Command Template, along with scripts that subscribe 
 
 ![[20240820003741.png]]
 
-## How Adding a New Command Works
-### Create a new command object
+# How Adding a New Command Works
+## Create a new command object
 
 Use the Create menu to create a new scriptable object and assign images for the button.
 
 ![[20240819213747.png]]
 
-### Add to a Template
+## Add to a Template
 
 ![[20240819213945.png]]
 
-### Write Code for Units to Implement the Command
+## Write Code for Units to Implement the Command
 
 ```c#
 public class DebugCommandListener : MonoBehaviour, ICommandRegister 
@@ -54,15 +54,15 @@ Attach script to our unit and configure the command scriptable object. This coul
 
 ![[20240819214418.png]]
 
-### Finished
+## Finished Adding a New Command
 
 This command could now be assigned to multiple units, and easily moved to a new position.
 
 ![[20240819235121.png]]
 
-## Implementation
+# Implementation
 
-### The Command Scriptable Object
+## The Command Scriptable Object
 
 First there is the `BaseCommand` script that defines the images and an Execute Method. The Execute Method will be called by the UI when the button is clicked (or a hotkey pressed).
 
@@ -117,7 +117,7 @@ public abstract class Command<T> : BaseCommand
 ```
 
 
-### Position Commands
+## Position Commands
 
 The Move command is an instance of this Position Command, which requires a Vector3.
 
@@ -161,7 +161,7 @@ private void HandlePositionCommand(Ray ray)
 ```
 
 
-### Command Templates
+## Command Templates
 
 This is attached to a script on each unit, and determines which commands should be shown when they are selected
 
@@ -175,7 +175,7 @@ public class CommandTemplate : ScriptableObject
 }
 ```
 
-### The Units
+## The Units
 
 ![[20240819235859.png]]
 
@@ -237,7 +237,7 @@ public void OnDeselect()
 }
 ```
 
-### UI
+## UI
 
 Finally the UI has a list of button objects and iterates through each of them, binding them to the corresponding Command.
 

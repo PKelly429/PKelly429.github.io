@@ -1,12 +1,12 @@
 We need to keep track of what areas of the map the player is able to see for the fog of war. Then we can write that data to a texture and use a shader to render the fog of war.
 
-### Resources:
+## Resources:
 
 [implementing fog of war for rts game in unity](https://blog.gemserk.com/2018/08/27/implementing-fog-of-war-for-rts-games-in-unity-1-2/)
 [riot games fog of war story](https://technology.riotgames.com/news/story-fog-and-war)
 [visibility](https://www.redblobgames.com/articles/visibility/)
 
-## Basic Solution
+# Basic Solution
 
 To do this we can keep count of how many units are able to see each cell.
 
@@ -43,7 +43,7 @@ private void UpdateUnitVisibility(GridCell pos, int radius, bool add)
 			}
 			else
 			{
-				unitsWithVisionInCell[y * GridBounds + x]++;
+				unitsWithVisionInCell[y * GridBounds + x]--;
 			}
 		}
 	}
@@ -51,9 +51,9 @@ private void UpdateUnitVisibility(GridCell pos, int radius, bool add)
 ```
 
 
-## Optimisations
+# Optimisations
 
-### Only Update Units that Move
+## Only Update Units that Move
 
 Easy enough, if a unit doesn't move skip recalculating it's visibility 
 
@@ -74,7 +74,7 @@ public void Update()
 }
 ```
 
-### Make the Grid Smaller
+## Make the Grid Smaller
 
 For a unit with a range of 20 units, if the Grid Size is 1x1 then to calculate it's vision requires 20x20 = 400 comparisons. If we change the Grid Size to 2x2, then we only need 10x10 = 100 comparisons.
 
@@ -82,7 +82,7 @@ So we perform 4x better if we reduce the Grid Size by 2x.
 
 This is obviously a balance between gameplay and performance as having too big a grid size will make the fog of war blocky, and potentially affect other systems e.g. if the Building System uses the same grid.
 
-### Optimising the Calculation
+## Optimising the Calculation
 
 Rather than iterate over a radius x radius grid and calculate if each cell overlaps, we can do better. Instead we calculate the height of each column, and only iterate over cells that are inside the circle.
 
@@ -114,13 +114,13 @@ private void UpdateUnitVisibility(GridCell pos, int radius, bool add)
 }
 ```
 
-## Further Improvement to the Calculation
+# Further Improvement to the Calculation
 
 If we know a unit has moved 1 grid space to the right, we know that most of the cells they occupy will remain the same. If we can calculate only the cells that need to change, we can reduce the number of cells that need to be considered.
 
 ![[Pasted image 20240901162525.png]]
 
-## Unity Job System
+# Unity Job System
 
 [Unity Job System](https://docs.unity3d.com/Manual/JobSystem.html)
 
@@ -128,7 +128,7 @@ Using the Job System will allow us to move our calculations to a separate thread
 
 There is also the option of allowing it to run over multiple frames, and only restarting the job once it finishes, or having it run every x seconds.
 
-### The Job class
+## The Job class
 
 ```c#
 public struct UnitVision  
@@ -166,7 +166,7 @@ public struct UpdateUnitVisibilityJob : IJob
 }
 ```
 
-### The Schedular
+## The Schedular
 
 ```c#
 public class GridVisibilityManager : MonoBehaviour
@@ -272,7 +272,7 @@ public class GridVisibilityManager : MonoBehaviour
 }
 ```
 
-## The Burst Compiler
+# The Burst Compiler
 
 To test the speed of using the Burst compiler I turned off the optimisation to skip units that hadn't moved, and completed the job immediately to profile how long it was taking.
 
