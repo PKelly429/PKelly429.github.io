@@ -12,9 +12,9 @@ To get our Fog of War working we need to keep track of what areas of the map the
 
 To do this we can keep count of how many units are able to see each cell.
 
-The most simple solution is to iterate over every unit, remove them from each cell they can see, update their position and re-add them.
+The most simple solution is to iterate over every unit, remove them from each cell they can see, update their position and re-add them with the new position.
 
-The most straightforward way to test which cells a unit can see is to iterate over a grid from -radius to +radius, centred around the unit. Then test if each cell overlaps with a circle.
+To find which cells a unit can see we can loop over a grid from -radius to +radius, centred around the unit. Then test if each cell overlaps with the vision circle.
 
 
 ``` c#
