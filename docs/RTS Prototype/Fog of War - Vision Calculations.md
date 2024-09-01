@@ -2,9 +2,9 @@ We need to keep track of what areas of the map the player is able to see for the
 
 ### Resources:
 
-https://blog.gemserk.com/2018/08/27/implementing-fog-of-war-for-rts-games-in-unity-1-2/
-https://technology.riotgames.com/news/story-fog-and-war
-https://www.redblobgames.com/articles/visibility/
+[implementing fog of war for rts game in unity](https://blog.gemserk.com/2018/08/27/implementing-fog-of-war-for-rts-games-in-unity-1-2/)
+[riot games fog of war story](https://technology.riotgames.com/news/story-fog-and-war)
+[visibility](https://www.redblobgames.com/articles/visibility/)
 
 ## Basic Solution
 
@@ -87,7 +87,7 @@ This is obviously a balance between gameplay and performance as having too big a
 Rather than iterate over a radius x radius grid and calculate if each cell overlaps, we can do better. Instead we calculate the height of each column, and only iterate over cells that are inside the circle.
 
 [Bresenham's Algorithm](http://members.chello.at/~easyfilter/bresenham.html)
-https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+[Wikipedia](https://en.wikipedia.org/wiki/Midpoint_circle_algorithm)
 
 ```c#
 private void UpdateUnitVisibility(GridCell pos, int radius, bool add)  
@@ -140,7 +140,7 @@ public struct UnitVision
 ```
 
 ``` c#
-public struct UpdateGridLitJob : IJob  
+public struct UpdateUnitVisibilityJob : IJob  
 {  
     [@ReadOnly] public NativeArray<UnitVision> units;  
     public NativeArray<uint> unitsWithVisionInCell;  
@@ -248,7 +248,7 @@ public class GridVisibilityManager : MonoBehaviour
 	    
 	    if (processQueueIndex > 0)  
 	    {        
-		    var job = new UpdateGridLitJob()  
+		    var job = new UpdateUnitVisibilityJob()  
 	        {  
 	            units = unitsToProcess,  
 	            unitsWithVisionInCell = unitsWithVisionInCell,  
@@ -288,3 +288,5 @@ public struct UpdateGridLitJob : IJob
 }
 
 ```
+
+Even without the further improvement of ignoring cells that a unit will remain in, the calculation is now having negligible impact on performance
