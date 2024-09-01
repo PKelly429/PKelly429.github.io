@@ -1,9 +1,11 @@
-We need to keep track of what areas of the map the player is able to see for the fog of war. Then we can write that data to a texture and use a shader to render the fog of war.
+To get our Fog of War working we need to keep track of what areas of the map the player is able to see. Once we know what grid cells are visible, we can write that data to a texture and use a shader to render the fog of war.
 
 ## Resources:
 
 [implementing fog of war for rts game in unity](https://blog.gemserk.com/2018/08/27/implementing-fog-of-war-for-rts-games-in-unity-1-2/)
+
 [riot games fog of war story](https://technology.riotgames.com/news/story-fog-and-war)
+
 [visibility](https://www.redblobgames.com/articles/visibility/)
 
 # Basic Solution
@@ -87,6 +89,7 @@ This is obviously a balance between gameplay and performance as having too big a
 Rather than iterate over a radius x radius grid and calculate if each cell overlaps, we can do better. Instead we calculate the height of each column, and only iterate over cells that are inside the circle.
 
 [Bresenham's Algorithm](http://members.chello.at/~easyfilter/bresenham.html)
+
 [Wikipedia](https://en.wikipedia.org/wiki/Midpoint_circle_algorithm)
 
 ```c#
