@@ -208,12 +208,6 @@ public class GridVisibilityManager : MonoBehaviour
 	    unitsToProcess = new NativeArray<UnitVision>(MaxUnits, Allocator.Persistent);  
 	    unitsWithVisionInCell = new NativeArray<uint>(GridBounds * GridBounds, Allocator.Persistent);  
 	}
-
-	private void Start()  
-	{  
-	    unitsToProcess = new NativeArray<UnitVision>(MaxUnits, Allocator.Persistent);  
-	    unitsWithVisionInCell = new NativeArray<uint>(GridBounds * GridBounds, Allocator.Persistent);  
-	}  
 	  
 	private void OnDestroy()  
 	{  
