@@ -278,12 +278,72 @@ I added around 20-30 units to the scene, and the above was taking around 0.5ms.
 After adding the Burst compiler that went to 0.03ms, a 17x improvement.
 
 ```c#
-[BurstCompile(FloatMode = FloatMode.Fast)]  
-public struct UpdateGridLitJob : IJob  
+[BurstCompile]  
+public struct UpdateUnitVisibilityJob : IJob  
 {
 	 //...
 }
 
 ```
 
-Even without the further improvement of ignoring cells that a unit will remain in, the calculation is now having negligible impact on performance
+Even without the further improvement of ignoring cells that a unit will remain in, the calculation is now having negligible impact on performance.
+
+
+# Updating the Texture
+
+```c#
+[BurstCompile]  
+public struct UpdateGridTextureJob : IJobParallelFor  
+{  
+    [@ReadOnly] public NativeArray<bool> blockedCells;  
+    [@ReadOnly] public NativeArray<uint> unitsWithVisionInCell;  
+    [WriteOnly] public NativeArray<Color32> texture;  
+    
+    public void Execute(int index)  
+    {        
+	    byte r = blockedCells[index] ? byte.MaxValue : byte.MinValue;  
+        byte g = byte.MinValue;  
+        byte b = unitsWithVisionInCell[index] > 0 ? byte.MaxValue : byte.MinValue; 
+        byte a = byte.MaxValue;  
+        
+        texture[index] = new Color32(r, g, b, a);  
+    }
+}
+```
+
+
+```c#
+
+[SerializeField] private Texture2D gridTexture;
+private NativeArray<Color32> gridTextureData;
+
+private void Start()
+{
+	// define the texture data
+	gridTextureData = gridTexture.GetRawTextureData<Color32>();
+}
+
+//...
+
+private void Update()
+{
+	// ...
+	
+	// Schedule job after the calculations are finished
+	var updateTextureJob = new UpdateGridTextureJob()  
+	{  
+	    blockedCells = blockedCells,  
+	    unitsWithVisionInCell = unitsWithVisionInCell,  
+	    texture = gridTextureData  
+	};  
+	_updateTextureJobHandle = updateTextureJob.Schedule(GridBounds*GridBounds, 8, _updateLitCellsJobHandle);
+}
+//...
+
+private void LateUpdate()
+{
+	// When job finished, apply the texture
+	_updateTextureJobHandle.Complete();
+	gridTexture.Apply();
+}
+```
