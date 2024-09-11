@@ -128,6 +128,7 @@ If we know a unit has moved 1 grid space to the right, we know that most of the 
 ![[Pasted image 20240901162525.png]]
 
 I have left this optimisation for now, as it makes the code quite a bit more complicated, and after moving things to the Job system, more optimisation wasn't required.
+
 # Unity Job System
 
 [Unity Job System](https://docs.unity3d.com/Manual/JobSystem.html)
@@ -144,6 +145,8 @@ The job will take in an array of Units that need to recalculate their vision, wi
 
 The job outputs a flattened 2d array with the number of units in a given cell.
 
+If possible we would like our jobs to be run in parallel, using IJobParallel rather than IJob. In this case, because each execution of the job wants to write to the output array in an undetermined order (i.e. units[0] does not exclusively write to unitsWithVisionInCell[0]), we cannot ensure thread safety and have to use a single job.
+
 ```c#
 public struct UnitVision  
 {  
@@ -152,6 +155,8 @@ public struct UnitVision
     public int radius;  
 }
 ```
+
+The method 'UpdateUnitVisibility' is the same as before.
 
 ``` c#
 public struct UpdateUnitVisibilityJob : IJob  
