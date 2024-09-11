@@ -1,0 +1,868 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../Fog%20of%20War%20-%20Vision%20Calculations/">
+      
+      
+        <link rel="next" href="../Spatial%20Hashing/">
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.34">
+    
+    
+      
+        <title>Handling Commands - obsidian-mkdocs template</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.35f28582.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="pink" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#handling-commands" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="obsidian-mkdocs template" class="md-header__button md-logo" aria-label="obsidian-mkdocs template" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            obsidian-mkdocs template
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Handling Commands
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="pink" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="pink" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="obsidian-mkdocs template" class="md-nav__button md-logo" aria-label="obsidian-mkdocs template" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    obsidian-mkdocs template
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Paul Kelly Dev Logs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    RTS Prototype
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            RTS Prototype
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Fog%20of%20War%20-%20Vision%20Calculations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fog of War - Vision Calculations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Handling Commands
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Spatial%20Hashing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spatial Hashing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Useful Scripts
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Useful Scripts
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Useful%20Scripts/Assign%20GUIDs%20Automatically/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Assign GUIDs Automatically
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Useful%20Scripts/ReadOnly%20attribute/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ReadOnly attribute
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Blog
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Archive
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="handling-commands">Handling Commands<a class="headerlink" href="#handling-commands" title="Permanent link">&para;</a></h1>
+<p>In most RTS games, clicking on a unit will display commands unique to that unit.</p>
+<p>I wanted to create a system that would allow me to define commands in a way that would be easily configurable.</p>
+<p><img alt="20240819212005.png" src="../../20240819212005.png" /></p>
+<h1 id="the-idea">The Idea<a class="headerlink" href="#the-idea" title="Permanent link">&para;</a></h1>
+<p>A Command scriptable object is used to manage the visuals for each Command, as well as hold an event that units can subscribe to if they are ready to respond to that event.</p>
+<p>This command object can then be bound to the UI.</p>
+<p>Another scriptable object, the Command Template is used to define what Commands a unit has and their order in the UI.</p>
+<p>A unit has a reference to a Command Template, along with scripts that subscribe to each Command and implement some code to execute when that Command is pressed.</p>
+<p><img alt="20240820003741.png" src="../../20240820003741.png" /></p>
+<h1 id="how-adding-a-new-command-works">How Adding a New Command Works<a class="headerlink" href="#how-adding-a-new-command-works" title="Permanent link">&para;</a></h1>
+<h2 id="create-a-new-command-object">Create a new command object<a class="headerlink" href="#create-a-new-command-object" title="Permanent link">&para;</a></h2>
+<p>Use the Create menu to create a new scriptable object and assign images for the button.</p>
+<p><img alt="20240819213747.png" src="../../20240819213747.png" /></p>
+<h2 id="add-to-a-template">Add to a Template<a class="headerlink" href="#add-to-a-template" title="Permanent link">&para;</a></h2>
+<p><img alt="20240819213945.png" src="../../20240819213945.png" /></p>
+<h2 id="write-code-for-units-to-implement-the-command">Write Code for Units to Implement the Command<a class="headerlink" href="#write-code-for-units-to-implement-the-command" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">DebugCommandListener</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">MonoBehaviour</span><span class="p">,</span><span class="w"> </span><span class="n">ICommandRegister</span><span class="w"> </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="na">[SerializeField]</span><span class="w"> </span><span class="n">Command</span><span class="w"> </span><span class="n">command</span><span class="p">;</span><span class="w">  </span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Register</span><span class="p">()</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">        </span>
+<span class="w">        </span><span class="n">command</span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">RespondToDebugCommand</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Deregister</span><span class="p">()</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">        </span>
+<span class="w">        </span><span class="n">command</span><span class="p">.</span><span class="n">Deregister</span><span class="p">(</span><span class="n">RespondToDebugCommand</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">RespondToDebugCommand</span><span class="p">()</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">        </span>
+<span class="w">        </span><span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="s">&quot;Unit has received debug command&quot;</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Attach script to our unit and configure the command scriptable object. This could also be configured globally (e.g. In a static singleton with reference to all commands).</p>
+<p><img alt="20240819214418.png" src="../../20240819214418.png" /></p>
+<h2 id="finished-adding-a-new-command">Finished Adding a New Command<a class="headerlink" href="#finished-adding-a-new-command" title="Permanent link">&para;</a></h2>
+<p>This command could now be assigned to multiple units, and easily moved to a new position.</p>
+<p><img alt="20240819235121.png" src="../../20240819235121.png" /></p>
+<h1 id="implementation">Implementation<a class="headerlink" href="#implementation" title="Permanent link">&para;</a></h1>
+<h2 id="the-command-scriptable-object">The Command Scriptable Object<a class="headerlink" href="#the-command-scriptable-object" title="Permanent link">&para;</a></h2>
+<p>First there is the <code>BaseCommand</code> script that defines the images and an Execute Method. The Execute Method will be called by the UI when the button is clicked (or a hotkey pressed).</p>
+<div class="highlight"><pre><span></span><code><span class="na">[Serializable]</span><span class="w">  </span>
+<span class="k">public</span><span class="w"> </span><span class="k">abstract</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">BaseCommand</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ScriptableObject</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Sprite</span><span class="w"> </span><span class="n">image</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Sprite</span><span class="w"> </span><span class="n">imageHover</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">abstract</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Execute</span><span class="p">();</span><span class="w">  </span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Next there are two implementations, a regular command for simple actions (such as the Debug Command created here) and a generic command that can be used to create more complex commands requiring data. The Move command for example is a <code>Command&lt;Vector3&gt;</code>.</p>
+<p>These scripts contain an event that can be subscribed to. When a unit is selected it subscribes to all commands it has been configured for. This allows all selected units to respond to a command.</p>
+<p>The simple command immediately calls the event when pressed.</p>
+<div class="highlight"><pre><span></span><code><span class="na">[CreateAssetMenu(menuName=&quot;Command/Command&quot;)]</span><span class="w">  </span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Command</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">BaseCommand</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">event</span><span class="w"> </span><span class="n">ExecuteCommand</span><span class="w"> </span><span class="n">OnExecute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">};</span><span class="w">  </span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">delegate</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">ExecuteCommand</span><span class="p">();</span><span class="w">  </span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Execute</span><span class="p">()</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">        </span>
+<span class="w">        </span><span class="n">OnExecute</span><span class="p">.</span><span class="n">Invoke</span><span class="p">();</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span><span class="w">        </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Register</span><span class="p">(</span><span class="n">ExecuteCommand</span><span class="w"> </span><span class="n">action</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">OnExecute</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">action</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Deregister</span><span class="p">(</span><span class="n">ExecuteCommand</span><span class="w"> </span><span class="n">action</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">OnExecute</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">action</span><span class="p">;</span><span class="w">  </span>
+<span class="p">}</span><span class="w">  </span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">abstract</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Command</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">BaseCommand</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">event</span><span class="w"> </span><span class="n">ExecuteCommand</span><span class="w"> </span><span class="n">OnExecute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">value</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">};</span><span class="w">  </span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">delegate</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">ExecuteCommand</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="k">value</span><span class="p">);</span><span class="w">  </span>
+
+<span class="w">    </span><span class="c1">// Does not implment Execute()</span>
+<span class="w">    </span><span class="c1">// Any implementation still needs to implement this method</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">ExecuteWithValue</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="k">value</span><span class="p">)</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">        </span>
+<span class="w">        </span><span class="n">OnExecute</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="k">value</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span><span class="w">        </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Register</span><span class="p">(</span><span class="n">ExecuteCommand</span><span class="w"> </span><span class="n">action</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">OnExecute</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">action</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Deregister</span><span class="p">(</span><span class="n">ExecuteCommand</span><span class="w"> </span><span class="n">action</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">OnExecute</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">action</span><span class="p">;</span><span class="w">  </span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="position-commands">Position Commands<a class="headerlink" href="#position-commands" title="Permanent link">&para;</a></h2>
+<p>The Move command is an instance of this Position Command, which requires a Vector3.</p>
+<div class="highlight"><pre><span></span><code><span class="na">[CreateAssetMenu(menuName = &quot;Command/Position Command&quot;)]</span><span class="w">  </span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Vector3Command</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Command</span><span class="o">&lt;</span><span class="n">Vector3</span><span class="o">&gt;</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Execute</span><span class="p">()</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">        </span>
+<span class="w">        </span><span class="n">SceneReferences</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">inputHandler</span><span class="p">.</span><span class="n">SetCommand</span><span class="p">(</span><span class="k">this</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Rather than immediately invoke the <code>OnExecute</code> event, it first makes a call to the Input Handler.
+When the command is executed, the next click will order the unit to move to that position.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">SetCommand</span><span class="p">(</span><span class="n">Vector3Command</span><span class="w"> </span><span class="n">command</span><span class="p">)</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="n">HasTargetCommand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="n">currentTargetCommand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">command</span><span class="p">;</span><span class="w">  </span>
+<span class="p">}</span>
+
+<span class="p">...</span>
+
+<span class="c1">// Called in Update if HasTargetCommand and mouse pressed this frame</span>
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">HandlePositionCommand</span><span class="p">(</span><span class="n">Ray</span><span class="w"> </span><span class="n">ray</span><span class="p">)</span><span class="w"> </span>
+<span class="p">{</span><span class="w">      </span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">hits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Physics</span><span class="p">.</span><span class="n">RaycastNonAlloc</span><span class="p">(</span><span class="n">ray</span><span class="p">.</span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="n">ray</span><span class="p">.</span><span class="n">direction</span><span class="p">,</span><span class="w"> </span><span class="n">_hits</span><span class="p">,</span><span class="w"> </span><span class="n">MaxDistance</span><span class="p">,</span><span class="w"> </span><span class="n">groundLayers</span><span class="p">);</span><span class="w">  </span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">hits</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">currentTargetCommand</span><span class="p">.</span><span class="n">ExecuteWithValue</span><span class="p">(</span><span class="n">_hits</span><span class="p">[</span><span class="m">0</span><span class="p">].</span><span class="n">point</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span><span class="w">    </span>
+
+<span class="w">    </span><span class="n">HasTargetCommand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="n">currentTargetCommand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span><span class="w">  </span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="command-templates">Command Templates<a class="headerlink" href="#command-templates" title="Permanent link">&para;</a></h2>
+<p>This is attached to a script on each unit, and determines which commands should be shown when they are selected</p>
+<div class="highlight"><pre><span></span><code><span class="na">[CreateAssetMenu(menuName = &quot;Command/Command Template&quot;)]</span><span class="w">  </span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">CommandTemplate</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ScriptableObject</span><span class="w"> </span>
+<span class="p">{</span><span class="w">   </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">BaseCommand</span><span class="p">[]</span><span class="w"> </span><span class="n">commandRow1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BaseCommand</span><span class="p">[</span><span class="m">5</span><span class="p">];</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">BaseCommand</span><span class="p">[]</span><span class="w"> </span><span class="n">commandRow2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BaseCommand</span><span class="p">[</span><span class="m">5</span><span class="p">];</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">BaseCommand</span><span class="p">[]</span><span class="w"> </span><span class="n">commandRow3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BaseCommand</span><span class="p">[</span><span class="m">5</span><span class="p">];</span><span class="w">  </span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="the-units">The Units<a class="headerlink" href="#the-units" title="Permanent link">&para;</a></h2>
+<p><img alt="20240819235859.png" src="../../20240819235859.png" /></p>
+<p>The units are configured with a number of scripts with the <code>ICommandRegister</code> interface. <code>MoveableEntity</code> implements the Move and Stop commands.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">ICommandRegister</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Register</span><span class="p">();</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Deregister</span><span class="p">();</span><span class="w">  </span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The Selectable Object script gathers a reference to all scripts with this interface and when selected, they register to all commands.</p>
+<div class="highlight"><pre><span></span><code><span class="na">[SerializeField]</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="n">CommandTemplate</span><span class="w"> </span><span class="n">commands</span><span class="p">;</span>
+
+<span class="k">private</span><span class="w"> </span><span class="n">ICommandRegister</span><span class="p">[]</span><span class="w"> </span><span class="n">commandListeners</span><span class="p">;</span><span class="w">  </span>
+
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Start</span><span class="p">()</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="n">commandListeners</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetComponents</span><span class="o">&lt;</span><span class="n">ICommandRegister</span><span class="o">&gt;</span><span class="p">();</span><span class="w">  </span>
+<span class="p">}</span><span class="w">  </span>
+
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">RegisterCommands</span><span class="p">()</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="n">SceneReferences</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">commandButtonGrid</span><span class="p">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">commands</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">commandListener</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">commandListeners</span><span class="p">)</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">        </span>
+<span class="w">        </span><span class="n">commandListener</span><span class="p">.</span><span class="n">Register</span><span class="p">();</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span><span class="w">  </span>
+
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">DeregisterCommands</span><span class="p">()</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">commandListener</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">commandListeners</span><span class="p">)</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">        </span>
+<span class="w">        </span><span class="n">commandListener</span><span class="p">.</span><span class="n">Deregister</span><span class="p">();</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnSelect</span><span class="p">()</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="p">...</span>
+
+<span class="w">    </span><span class="c1">// This is a temporary measure to tell the UI to use this units commands</span>
+<span class="w">    </span><span class="c1">// When multiple units can be selected at once this will need a system to</span>
+<span class="w">    </span><span class="c1">// handle combining templates from all selected units</span>
+<span class="w">    </span><span class="n">SceneReferences</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">commandButtonGrid</span><span class="p">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">commands</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">RegisterCommands</span><span class="p">();</span><span class="w">  </span>
+<span class="p">}</span><span class="w">  </span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnDeselect</span><span class="p">()</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="p">...</span>
+<span class="w">    </span><span class="n">DeregisterCommands</span><span class="p">();</span><span class="w">  </span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="ui">UI<a class="headerlink" href="#ui" title="Permanent link">&para;</a></h2>
+<p>Finally the UI has a list of button objects and iterates through each of them, binding them to the corresponding Command.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Bind</span><span class="p">(</span><span class="n">CommandTemplate</span><span class="w"> </span><span class="n">unitCommands</span><span class="p">)</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">unitCommands</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">        </span>
+<span class="w">        </span><span class="n">Unbind</span><span class="p">();</span><span class="w">  </span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span><span class="w">    </span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">unitCommands</span><span class="p">.</span><span class="n">commandRow1</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">        </span>
+<span class="w">        </span><span class="n">commandBinders</span><span class="p">[</span><span class="n">next</span><span class="p">].</span><span class="n">Bind</span><span class="p">(</span><span class="n">unitCommands</span><span class="p">.</span><span class="n">commandRow1</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span><span class="w">  </span>
+<span class="w">        </span><span class="n">next</span><span class="o">++</span><span class="p">;</span><span class="w">    </span>
+<span class="w">    </span><span class="p">}</span><span class="w">    </span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">unitCommands</span><span class="p">.</span><span class="n">commandRow2</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">        </span>
+<span class="w">        </span><span class="n">commandBinders</span><span class="p">[</span><span class="n">next</span><span class="p">].</span><span class="n">Bind</span><span class="p">(</span><span class="n">unitCommands</span><span class="p">.</span><span class="n">commandRow2</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span><span class="w">  </span>
+<span class="w">        </span><span class="n">next</span><span class="o">++</span><span class="p">;</span><span class="w">    </span>
+<span class="w">    </span><span class="p">}</span><span class="w">    </span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">unitCommands</span><span class="p">.</span><span class="n">commandRow3</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">        </span>
+<span class="w">        </span><span class="n">commandBinders</span><span class="p">[</span><span class="n">next</span><span class="p">].</span><span class="n">Bind</span><span class="p">(</span><span class="n">unitCommands</span><span class="p">.</span><span class="n">commandRow3</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span><span class="w">  </span>
+<span class="w">        </span><span class="n">next</span><span class="o">++</span><span class="p">;</span><span class="w">    </span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">CommandBinder</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">MonoBehaviour</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="na">[SerializeField]</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="n">Button</span><span class="w"> </span><span class="n">button</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="na">[SerializeField]</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="n">Image</span><span class="w"> </span><span class="n">icon</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="na">[SerializeField]</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="n">HighlightOnHover</span><span class="w"> </span><span class="n">hover</span><span class="p">;</span><span class="w"> </span><span class="c1">//switches icon when hovered </span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Bind</span><span class="p">(</span><span class="n">BaseCommand</span><span class="w"> </span><span class="n">command</span><span class="p">)</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">        </span>
+<span class="w">        </span><span class="n">Unbind</span><span class="p">();</span><span class="w">  </span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">command</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">icon</span><span class="p">.</span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span><span class="w">  </span>
+<span class="w">        </span><span class="n">icon</span><span class="p">.</span><span class="n">sprite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">command</span><span class="p">.</span><span class="n">image</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">button</span><span class="p">.</span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span><span class="w">  </span>
+<span class="w">        </span><span class="n">button</span><span class="p">.</span><span class="n">onClick</span><span class="p">.</span><span class="n">AddListener</span><span class="p">(</span><span class="n">command</span><span class="p">.</span><span class="n">Execute</span><span class="p">);</span><span class="w"> </span>
+
+<span class="w">        </span><span class="n">hover</span><span class="p">.</span><span class="n">SetSprites</span><span class="p">(</span><span class="n">command</span><span class="p">.</span><span class="n">image</span><span class="p">,</span><span class="w"> </span><span class="n">command</span><span class="p">.</span><span class="n">imageHover</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span><span class="w">  </span>
+
+<span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Unbind</span><span class="p">()</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">        </span>
+<span class="w">        </span><span class="n">icon</span><span class="p">.</span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span><span class="w">  </span>
+<span class="w">        </span><span class="n">button</span><span class="p">.</span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span><span class="w">  </span>
+<span class="w">        </span><span class="n">button</span><span class="p">.</span><span class="n">onClick</span><span class="p">.</span><span class="n">RemoveAllListeners</span><span class="p">();</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.07f07601.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.56dfad97.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>

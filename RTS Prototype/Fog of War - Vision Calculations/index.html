@@ -1,0 +1,991 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../..">
+      
+      
+        <link rel="next" href="../Handling%20Commands/">
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.34">
+    
+    
+      
+        <title>Fog of War - Vision Calculations - obsidian-mkdocs template</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.35f28582.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="pink" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#fog-of-war-vision-calculations" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="obsidian-mkdocs template" class="md-header__button md-logo" aria-label="obsidian-mkdocs template" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            obsidian-mkdocs template
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Fog of War - Vision Calculations
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="pink" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="pink" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="obsidian-mkdocs template" class="md-nav__button md-logo" aria-label="obsidian-mkdocs template" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    obsidian-mkdocs template
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Paul Kelly Dev Logs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    RTS Prototype
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            RTS Prototype
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Fog of War - Vision Calculations
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Fog of War - Vision Calculations
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resources:
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Handling%20Commands/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Handling Commands
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Spatial%20Hashing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Spatial Hashing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Useful Scripts
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Useful Scripts
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Useful%20Scripts/Assign%20GUIDs%20Automatically/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Assign GUIDs Automatically
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Useful%20Scripts/ReadOnly%20attribute/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ReadOnly attribute
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Blog
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Archive
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resources:
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="fog-of-war-vision-calculations">Fog of War - Vision Calculations<a class="headerlink" href="#fog-of-war-vision-calculations" title="Permanent link">&para;</a></h1>
+<p>To get our Fog of War working we need to keep track of what areas of the map the player is able to see. Once we know what grid cells are visible, we can write that data to a texture and use a shader to render the fog of war.</p>
+<h2 id="resources">Resources:<a class="headerlink" href="#resources" title="Permanent link">&para;</a></h2>
+<p><a href="https://blog.gemserk.com/2018/08/27/implementing-fog-of-war-for-rts-games-in-unity-1-2/">implementing fog of war for rts game in unity</a></p>
+<p><a href="https://technology.riotgames.com/news/story-fog-and-war">riot games fog of war story</a></p>
+<p><a href="https://www.redblobgames.com/articles/visibility/">visibility</a></p>
+<h1 id="basic-solution">Basic Solution<a class="headerlink" href="#basic-solution" title="Permanent link">&para;</a></h1>
+<p>To do this we can keep count of how many units are able to see each cell.</p>
+<p>The most simple solution is to iterate over every unit, remove them from each cell they can see, update their position and re-add them with the new position.</p>
+<p>To find which cells a unit can see we can loop over a grid from -radius to +radius, centred around the unit. Then test if each cell overlaps with the vision circle.</p>
+<p>'unitsWithVisionInCell' is a flattened 2d array where [x,y] = [y*width + x]</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Update</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">foreach</span><span class="p">(</span><span class="n">unit</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">allUnits</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">UpdateUnitVisibility</span><span class="p">(</span><span class="n">unit</span><span class="p">.</span><span class="n">gridPos</span><span class="p">,</span><span class="w"> </span><span class="n">unit</span><span class="p">.</span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+<span class="w">        </span><span class="n">unit</span><span class="p">.</span><span class="n">gridPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WorldToGridPos</span><span class="p">(</span><span class="n">unit</span><span class="p">.</span><span class="n">position</span><span class="p">);</span>
+<span class="w">        </span><span class="n">UpdateUnitVisibility</span><span class="p">(</span><span class="n">unit</span><span class="p">.</span><span class="n">gridPos</span><span class="p">,</span><span class="w"> </span><span class="n">unit</span><span class="p">.</span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">UpdateTexture</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">UpdateUnitVisibility</span><span class="p">(</span><span class="n">GridCell</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="k">add</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pos</span><span class="p">.</span><span class="n">x</span><span class="o">-</span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">pos</span><span class="p">.</span><span class="n">x</span><span class="o">+</span><span class="n">radius</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="o">++</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pos</span><span class="p">.</span><span class="n">y</span><span class="o">-</span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">pos</span><span class="p">.</span><span class="n">y</span><span class="o">+</span><span class="n">radius</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="o">++</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">GridCell</span><span class="w"> </span><span class="n">cell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">GridCell</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">cell</span><span class="p">.</span><span class="n">Overlaps</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="k">add</span><span class="p">)</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="n">unitsWithVisionInCell</span><span class="p">[</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GridBounds</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">else</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="n">unitsWithVisionInCell</span><span class="p">[</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GridBounds</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="p">]</span><span class="o">--</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h1 id="optimisations">Optimisations<a class="headerlink" href="#optimisations" title="Permanent link">&para;</a></h1>
+<h2 id="only-update-units-that-move">Only Update Units that Move<a class="headerlink" href="#only-update-units-that-move" title="Permanent link">&para;</a></h2>
+<p>Easy enough, if a unit doesn't move skip recalculating it's visibility </p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Update</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">foreach</span><span class="p">(</span><span class="n">unit</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">allUnits</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">GridPos</span><span class="w"> </span><span class="n">newPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WorldToGridPos</span><span class="p">(</span><span class="n">unit</span><span class="p">.</span><span class="n">position</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">unit</span><span class="p">.</span><span class="n">gridPos</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="n">newPos</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">UpdateUnitVisibility</span><span class="p">(</span><span class="n">unit</span><span class="p">.</span><span class="n">gridPos</span><span class="p">,</span><span class="w"> </span><span class="n">unit</span><span class="p">.</span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+<span class="w">        </span><span class="n">unit</span><span class="p">.</span><span class="n">gridPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newPos</span><span class="p">;</span>
+<span class="w">        </span><span class="n">UpdateUnitVisibility</span><span class="p">(</span><span class="n">unit</span><span class="p">.</span><span class="n">gridPos</span><span class="p">,</span><span class="w"> </span><span class="n">unit</span><span class="p">.</span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">UpdateTexture</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="make-the-grid-smaller">Make the Grid Smaller<a class="headerlink" href="#make-the-grid-smaller" title="Permanent link">&para;</a></h2>
+<p>For a unit with a range of 20 units, if the Grid Size is 1x1 then to calculate it's vision requires 20x20 = 400 comparisons. If we change the Grid Size to 2x2, then we only need 10x10 = 100 comparisons.</p>
+<p>So we perform 4x better if we reduce the Grid Size by 2x.</p>
+<p>This is obviously a balance between gameplay and performance as having too big a grid size will make the fog of war blocky, and potentially affect other systems e.g. if the Building System uses the same grid.</p>
+<h2 id="optimising-the-calculation">Optimising the Calculation<a class="headerlink" href="#optimising-the-calculation" title="Permanent link">&para;</a></h2>
+<p>Rather than iterate over a radius x radius grid and calculate if each cell overlaps, we can do better. Instead we calculate the height of each column, and only iterate over cells that are inside the circle.</p>
+<p><a href="http://members.chello.at/~easyfilter/bresenham.html">Bresenham's Algorithm</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Midpoint_circle_algorithm">Wikipedia</a></p>
+<div class="highlight"><pre><span></span><code><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">UpdateUnitVisibility</span><span class="p">(</span><span class="n">GridCell</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">increment</span><span class="p">)</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">radiusSquared</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">radius</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">radius</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pos</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">radius</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">pos</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">radius</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="o">++</span><span class="p">)</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">  </span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">xOffset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pos</span><span class="p">.</span><span class="n">x</span><span class="p">;</span><span class="w">  </span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">Math</span><span class="p">.</span><span class="n">Sqrt</span><span class="p">(</span><span class="n">radiusSquared</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">xOffset</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">xOffset</span><span class="p">));</span><span class="w">  </span>
+
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pos</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">height</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">pos</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">height</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="o">++</span><span class="p">)</span><span class="w">  </span>
+<span class="w">        </span><span class="p">{</span>
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">increment</span><span class="p">)</span><span class="w">  </span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="n">unitsWithVisionInCell</span><span class="p">[</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GridBounds</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="p">]</span><span class="o">++</span><span class="p">;</span><span class="w">  </span>
+<span class="w">            </span><span class="p">}</span><span class="w">            </span>
+<span class="w">            </span><span class="k">else</span><span class="w">  </span>
+<span class="w">            </span><span class="p">{</span><span class="w">  </span>
+<span class="w">                </span><span class="n">unitsWithVisionInCell</span><span class="p">[</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GridBounds</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="p">]</span><span class="o">--</span><span class="p">;</span><span class="w">     </span>
+<span class="w">            </span><span class="p">}</span><span class="w">  </span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="further-improvement-to-the-calculation">Further Improvement to the Calculation<a class="headerlink" href="#further-improvement-to-the-calculation" title="Permanent link">&para;</a></h2>
+<p>If we know a unit has moved 1 grid space to the right, we know that most of the cells they occupy will remain the same. If we can calculate only the cells that need to change, we can reduce the number of cells that need to be considered.</p>
+<p><img alt="Pasted image 20240901162525.png" src="../../Pasted%20image%2020240901162525.png" /></p>
+<p>I have left this optimisation for now, as it makes the code quite a bit more complicated, and after moving things to the Job system, more optimisation wasn't required.</p>
+<h1 id="unity-job-system">Unity Job System<a class="headerlink" href="#unity-job-system" title="Permanent link">&para;</a></h1>
+<p><a href="https://docs.unity3d.com/Manual/JobSystem.html">Unity Job System</a></p>
+<p>Using the Job System will allow us to move our calculations off the main thread, essentially making it free so long as it finishes before we need to use the result.</p>
+<p>The job system works best when used with the burst compiler, which does not allow managed types.</p>
+<h2 id="the-job-class">The Job class<a class="headerlink" href="#the-job-class" title="Permanent link">&para;</a></h2>
+<p>To work with the burst compiler our data needs to be converted to a structs and NativeArrays. </p>
+<p>The job will take in an array of Units that need to recalculate their vision, with the current and previous grid cell positions. A count is given to determine how far into the list to iterate.</p>
+<p>The job outputs a flattened 2d array with the number of units in a given cell.</p>
+<p>If possible we would like our jobs to be run in parallel, using IJobParallel rather than IJob. In this case, because each execution of the job wants to write to the output array in an undetermined order (i.e. units[0] does not exclusively write to unitsWithVisionInCell[0]), we cannot ensure thread safety and have to use a single job.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">UnitVision</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">GridCell</span><span class="w"> </span><span class="n">lastGridCell</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">GridCell</span><span class="w"> </span><span class="n">newGridCell</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">radius</span><span class="p">;</span><span class="w">  </span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The method 'UpdateUnitVisibility' is the same as before.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">UpdateUnitVisibilityJob</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IJob</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="na">[ReadOnly]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">NativeArray</span><span class="o">&lt;</span><span class="n">UnitVision</span><span class="o">&gt;</span><span class="w"> </span><span class="n">units</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">NativeArray</span><span class="o">&lt;</span><span class="kt">uint</span><span class="o">&gt;</span><span class="w"> </span><span class="n">unitsWithVisionInCell</span><span class="p">;</span><span class="w">  </span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">UnitCount</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">GridBounds</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Execute</span><span class="p">()</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">UnitCount</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w">  </span>
+<span class="w">        </span><span class="p">{</span><span class="w">  </span>
+<span class="w">            </span><span class="n">UnitVision</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">units</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">            </span><span class="kt">int</span><span class="w"> </span><span class="n">radiusSquared</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">radius</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">radius</span><span class="p">;</span>
+<span class="w">            </span><span class="n">UpdateUnitVisibility</span><span class="p">(</span><span class="n">unit</span><span class="p">.</span><span class="n">lastGridCell</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">radiusSquared</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">);</span><span class="w">  </span>
+<span class="w">            </span><span class="n">UpdateUnitVisibility</span><span class="p">(</span><span class="n">unit</span><span class="p">.</span><span class="n">newGridCell</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">radiusSquared</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">UpdateUnitVisibility</span><span class="p">(</span><span class="n">GridCell</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">radiusSquared</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">increment</span><span class="p">)</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">//...</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="the-schedular">The Schedular<a class="headerlink" href="#the-schedular" title="Permanent link">&para;</a></h2>
+<p>To run the job, we need to create an instance of it and run '.Schedule()'. This returns a job handle, and at some point we need to call .'Complete()' on the handle to ensure the job is finished.</p>
+<p>Our 'GridVisibilityManager' starts a job early in the frame, and then uses LateUpdate() to complete the job.</p>
+<p>The data being used by the job, in this case the 'unitsToProcess' and 'unitsWithVisionInCell' cannot be used while the job is running. Attempting to do so will cause the job to be finished on the main thread. This will need to be considered when using jobs. </p>
+<p>One strategy if the data needs to be freely available would be to create a copy that can be accessed at any time, and when the job finishes the data can be synced.</p>
+<p>In our case, we intend to use the data in another job, if this is the case we can use the previous job handle when scheduling the next job. This tells Unity that the next job depends on the previous one and the previous job must be completed first.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">GridVisibilityManager</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">MonoBehaviour</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">WorldSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1024</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">GridSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">GridBounds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WorldSize</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">GridSize</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">MaxUnits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">NativeArray</span><span class="o">&lt;</span><span class="n">UnitVision</span><span class="o">&gt;</span><span class="w"> </span><span class="n">unitsToProcess</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">NativeArray</span><span class="o">&lt;</span><span class="kt">uint</span><span class="o">&gt;</span><span class="w"> </span><span class="n">unitsWithVisionInCell</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">HashSet</span><span class="o">&lt;</span><span class="n">Unit</span><span class="o">&gt;</span><span class="w"> </span><span class="n">allUnits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HashSet</span><span class="o">&lt;</span><span class="n">Unit</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">JobHandle</span><span class="w"> </span><span class="n">_updateLitCellsJobHandle</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">_jobRunning</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">RegisterUnit</span><span class="p">(</span><span class="n">Unit</span><span class="w"> </span><span class="n">unit</span><span class="p">)</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">  </span>
+<span class="w">        </span><span class="c1">// when units are added, the job should skip the decrement step</span>
+<span class="w">        </span><span class="c1">// left out for brevity</span>
+<span class="w">        </span><span class="n">allUnits</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">unit</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span><span class="w">  </span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">DeregisterUnit</span><span class="p">(</span><span class="n">Unit</span><span class="w"> </span><span class="n">unit</span><span class="p">)</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">  </span>
+<span class="w">        </span><span class="c1">// when units are removed, the job should skip the increment step</span>
+<span class="w">        </span><span class="c1">// left out for brevity</span>
+<span class="w">        </span><span class="n">allUnits</span><span class="p">.</span><span class="n">Remove</span><span class="p">(</span><span class="n">unit</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Start</span><span class="p">()</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">  </span>
+<span class="w">        </span><span class="n">unitsToProcess</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NativeArray</span><span class="o">&lt;</span><span class="n">UnitVision</span><span class="o">&gt;</span><span class="p">(</span><span class="n">MaxUnits</span><span class="p">,</span><span class="w"> </span><span class="n">Allocator</span><span class="p">.</span><span class="n">Persistent</span><span class="p">);</span><span class="w">  </span>
+<span class="w">        </span><span class="n">unitsWithVisionInCell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NativeArray</span><span class="o">&lt;</span><span class="kt">uint</span><span class="o">&gt;</span><span class="p">(</span><span class="n">GridBounds</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GridBounds</span><span class="p">,</span><span class="w"> </span><span class="n">Allocator</span><span class="p">.</span><span class="n">Persistent</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnDestroy</span><span class="p">()</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">  </span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">_updateLitCellsJobHandle</span><span class="p">.</span><span class="n">IsCompleted</span><span class="p">)</span><span class="w">  </span>
+<span class="w">        </span><span class="p">{</span><span class="w">        </span>
+<span class="w">            </span><span class="n">_updateLitCellsJobHandle</span><span class="p">.</span><span class="n">Complete</span><span class="p">();</span><span class="w">  </span>
+<span class="w">        </span><span class="p">}</span><span class="w">    </span>
+
+<span class="w">        </span><span class="n">unitsToProcess</span><span class="p">.</span><span class="n">Dispose</span><span class="p">();</span><span class="w">  </span>
+<span class="w">        </span><span class="n">unitsWithVisionInCell</span><span class="p">.</span><span class="n">Dispose</span><span class="p">();</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span>
+
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Update</span><span class="p">()</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">  </span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">processQueueIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w">  </span>
+<span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">unit</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">allUnits</span><span class="p">)</span><span class="w">  </span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// skip if unit hasn&#39;t moved  </span>
+<span class="w">            </span><span class="n">GridCell</span><span class="w"> </span><span class="n">newPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GridCell</span><span class="p">.</span><span class="n">FromWorldPos</span><span class="p">(</span><span class="n">unit</span><span class="p">.</span><span class="n">Position</span><span class="p">);</span><span class="w">  </span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">unit</span><span class="p">.</span><span class="n">GridPosition</span><span class="p">.</span><span class="n">Equals</span><span class="p">(</span><span class="n">newPos</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span><span class="w"> </span>
+
+<span class="w">            </span><span class="n">unitsToProcess</span><span class="p">[</span><span class="n">processQueueIndex</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UnitVision</span><span class="p">()</span><span class="w">  </span>
+<span class="w">            </span><span class="p">{</span><span class="w">  </span>
+<span class="w">                </span><span class="n">newGridCell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newPos</span><span class="p">,</span><span class="w">  </span>
+<span class="w">                </span><span class="n">lastGridCell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">GridPosition</span><span class="p">,</span><span class="w">  </span>
+<span class="w">                </span><span class="n">radius</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">Radius</span>
+<span class="w">            </span><span class="p">};</span><span class="w">  </span>
+
+<span class="w">            </span><span class="n">obj</span><span class="p">.</span><span class="n">GridPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newPos</span><span class="p">;</span><span class="w">  </span>
+<span class="w">            </span><span class="n">processQueueIndex</span><span class="o">++</span><span class="p">;</span>
+
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">processQueueIndex</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">MaxUnits</span><span class="p">)</span><span class="w"> </span><span class="k">break</span><span class="p">;</span><span class="w">  </span>
+<span class="w">        </span><span class="p">}</span><span class="w">  </span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">processQueueIndex</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w">  </span>
+<span class="w">        </span><span class="p">{</span><span class="w">        </span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UpdateUnitVisibilityJob</span><span class="p">()</span><span class="w">  </span>
+<span class="w">            </span><span class="p">{</span><span class="w">  </span>
+<span class="w">                </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unitsToProcess</span><span class="p">,</span><span class="w">  </span>
+<span class="w">                </span><span class="n">unitsWithVisionInCell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unitsWithVisionInCell</span><span class="p">,</span><span class="w">  </span>
+<span class="w">                </span><span class="n">UnitCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">processQueueIndex</span><span class="p">,</span><span class="w">  </span>
+<span class="w">                </span><span class="n">GridBounds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GridBounds</span><span class="w">  </span>
+<span class="w">            </span><span class="p">};</span><span class="w">  </span>
+
+<span class="w">            </span><span class="n">_updateLitCellsJobHandle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">job</span><span class="p">.</span><span class="n">Schedule</span><span class="p">();</span><span class="w">  </span>
+<span class="w">            </span><span class="n">_jobRunning</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span><span class="w">  </span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span><span class="w">  </span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">LateUpdate</span><span class="p">()</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">  </span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">_jobRunning</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">_updateLitCellsJobHandle</span><span class="p">.</span><span class="n">Complete</span><span class="p">();</span><span class="w">  </span>
+<span class="w">        </span><span class="n">_jobRunning</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre></div>
+<h1 id="the-burst-compiler">The Burst Compiler<a class="headerlink" href="#the-burst-compiler" title="Permanent link">&para;</a></h1>
+<p>To use the burst compiler, we just need to add the attribute [BurstCompile].</p>
+<p>To test the speed of using the Burst compiler I turned off the optimisation to skip units that hadn't moved, and completed the job immediately to more easily profile how long it was taking.</p>
+<p>I added around 20-30 units to the scene, and the above was taking around 0.5ms.</p>
+<p>After adding the Burst compiler that went to 0.03ms, a 17x improvement.</p>
+<div class="highlight"><pre><span></span><code><span class="na">[BurstCompile]</span><span class="w">  </span>
+<span class="k">public</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">UpdateUnitVisibilityJob</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IJob</span><span class="w">  </span>
+<span class="p">{</span>
+<span class="w">     </span><span class="c1">//...</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Even without the further improvement of ignoring cells that a unit will remain in, the calculation is now having negligible impact on performance.</p>
+<h1 id="updating-the-texture">Updating the Texture<a class="headerlink" href="#updating-the-texture" title="Permanent link">&para;</a></h1>
+<p>To make use of the unit visibility info, we want to write the data into a texture, which can then be used by a shader. Writing to the texture can also be done in a job by creating a NativeArray using '.GetRawTextureData()'.</p>
+<p>On this same texture, we are using the red channel to determine which areas are buildable.</p>
+<div class="highlight"><pre><span></span><code><span class="na">[BurstCompile]</span><span class="w">  </span>
+<span class="k">public</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">UpdateGridTextureJob</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IJobParallelFor</span><span class="w">  </span>
+<span class="p">{</span><span class="w">  </span>
+<span class="w">    </span><span class="na">[ReadOnly]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">NativeArray</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">blockedCells</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="na">[ReadOnly]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">NativeArray</span><span class="o">&lt;</span><span class="kt">uint</span><span class="o">&gt;</span><span class="w"> </span><span class="n">unitsWithVisionInCell</span><span class="p">;</span><span class="w">  </span>
+<span class="w">    </span><span class="na">[WriteOnly]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">NativeArray</span><span class="o">&lt;</span><span class="n">Color32</span><span class="o">&gt;</span><span class="w"> </span><span class="n">texture</span><span class="p">;</span><span class="w">  </span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Execute</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="p">)</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">        </span>
+<span class="w">        </span><span class="kt">byte</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockedCells</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="kt">byte</span><span class="p">.</span><span class="n">MaxValue</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kt">byte</span><span class="p">.</span><span class="n">MinValue</span><span class="p">;</span><span class="w">  </span>
+<span class="w">        </span><span class="kt">byte</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">byte</span><span class="p">.</span><span class="n">MinValue</span><span class="p">;</span><span class="w">  </span>
+<span class="w">        </span><span class="kt">byte</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unitsWithVisionInCell</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="kt">byte</span><span class="p">.</span><span class="n">MaxValue</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kt">byte</span><span class="p">.</span><span class="n">MinValue</span><span class="p">;</span><span class="w"> </span>
+<span class="w">        </span><span class="kt">byte</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">byte</span><span class="p">.</span><span class="n">MaxValue</span><span class="p">;</span><span class="w">  </span>
+
+<span class="w">        </span><span class="n">texture</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Color32</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">);</span><span class="w">  </span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Because this job depends on the previous, we pass in the job handle '_updateLitCellsJobHandle' when scheduling.</p>
+<div class="highlight"><pre><span></span><code><span class="na">[SerializeField]</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="n">Texture2D</span><span class="w"> </span><span class="n">gridTexture</span><span class="p">;</span>
+<span class="k">private</span><span class="w"> </span><span class="n">NativeArray</span><span class="o">&lt;</span><span class="n">Color32</span><span class="o">&gt;</span><span class="w"> </span><span class="n">gridTextureData</span><span class="p">;</span>
+
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Start</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// define the texture data</span>
+<span class="w">    </span><span class="n">gridTextureData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gridTexture</span><span class="p">.</span><span class="n">GetRawTextureData</span><span class="o">&lt;</span><span class="n">Color32</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="c1">//...</span>
+
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Update</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+
+<span class="w">    </span><span class="c1">// Schedule job after the calculations are finished</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">updateTextureJob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UpdateGridTextureJob</span><span class="p">()</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="w">  </span>
+<span class="w">        </span><span class="n">blockedCells</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockedCells</span><span class="p">,</span><span class="w">  </span>
+<span class="w">        </span><span class="n">unitsWithVisionInCell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unitsWithVisionInCell</span><span class="p">,</span><span class="w">  </span>
+<span class="w">        </span><span class="n">texture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gridTextureData</span><span class="w">  </span>
+<span class="w">    </span><span class="p">};</span><span class="w">  </span>
+<span class="w">    </span><span class="n">_updateTextureJobHandle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">updateTextureJob</span><span class="p">.</span><span class="n">Schedule</span><span class="p">(</span><span class="n">GridBounds</span><span class="o">*</span><span class="n">GridBounds</span><span class="p">,</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">_updateLitCellsJobHandle</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">//...</span>
+
+<span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">LateUpdate</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// When job finished, apply the texture</span>
+<span class="w">    </span><span class="n">_updateTextureJobHandle</span><span class="p">.</span><span class="n">Complete</span><span class="p">();</span>
+<span class="w">    </span><span class="n">gridTexture</span><span class="p">.</span><span class="n">Apply</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.07f07601.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.56dfad97.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>
