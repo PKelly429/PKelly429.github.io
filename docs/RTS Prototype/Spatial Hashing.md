@@ -1,3 +1,4 @@
+# Spatial Hashing
 
 ## Resources
 https://www.youtube.com/watch?v=S5NY1fqisSY

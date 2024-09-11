@@ -1,3 +1,5 @@
+# Handling Commands
+
 In most RTS games, clicking on a unit will display commands unique to that unit.
 
 I wanted to create a system that would allow me to define commands in a way that would be easily configurable.

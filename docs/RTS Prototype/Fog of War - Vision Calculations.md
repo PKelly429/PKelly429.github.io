@@ -1,3 +1,5 @@
+# Fog of War - Vision Calculations
+
 To get our Fog of War working we need to keep track of what areas of the map the player is able to see. Once we know what grid cells are visible, we can write that data to a texture and use a shader to render the fog of war.
 
 ## Resources:
@@ -15,6 +17,8 @@ To do this we can keep count of how many units are able to see each cell.
 The most simple solution is to iterate over every unit, remove them from each cell they can see, update their position and re-add them with the new position.
 
 To find which cells a unit can see we can loop over a grid from -radius to +radius, centred around the unit. Then test if each cell overlaps with the vision circle.
+
+'unitsWithVisionInCell' is a flattened 2d array where [x,y] = [y*width + x]
 
 
 ``` c#
@@ -93,7 +97,7 @@ Rather than iterate over a radius x radius grid and calculate if each cell overl
 [Wikipedia](https://en.wikipedia.org/wiki/Midpoint_circle_algorithm)
 
 ```c#
-private void UpdateUnitVisibility(GridCell pos, int radius, bool add)  
+private void UpdateUnitVisibility(GridCell pos, int radius, bool increment)  
 {  
 	int radiusSquared = radius * radius;
     for (int x = pos.x - radius; x < pos.x + radius; x++)  
@@ -117,21 +121,28 @@ private void UpdateUnitVisibility(GridCell pos, int radius, bool add)
 }
 ```
 
-# Further Improvement to the Calculation
+## Further Improvement to the Calculation
 
 If we know a unit has moved 1 grid space to the right, we know that most of the cells they occupy will remain the same. If we can calculate only the cells that need to change, we can reduce the number of cells that need to be considered.
 
 ![[Pasted image 20240901162525.png]]
 
+I have left this optimisation for now, as it makes the code quite a bit more complicated, and after moving things to the Job system, more optimisation wasn't required.
 # Unity Job System
 
 [Unity Job System](https://docs.unity3d.com/Manual/JobSystem.html)
 
-Using the Job System will allow us to move our calculations to a separate thread, essentially making it free so long as it finishes before we complete the job, in this case when we reach the end of the frame.
+Using the Job System will allow us to move our calculations off the main thread, essentially making it free so long as it finishes before we need to use the result.
 
-There is also the option of allowing it to run over multiple frames, and only restarting the job once it finishes, or having it run every x seconds.
+The job system works best when used with the burst compiler, which does not allow managed types.
 
 ## The Job class
+
+To work with the burst compiler our data needs to be converted to a structs and NativeArrays. 
+
+The job will take in an array of Units that need to recalculate their vision, with the current and previous grid cell positions. A count is given to determine how far into the list to iterate.
+
+The job outputs a flattened 2d array with the number of units in a given cell.
 
 ```c#
 public struct UnitVision  
@@ -145,7 +156,7 @@ public struct UnitVision
 ``` c#
 public struct UpdateUnitVisibilityJob : IJob  
 {  
-    [@ReadOnly] public NativeArray<UnitVision> units;  
+    [ReadOnly] public NativeArray<UnitVision> units;  
     public NativeArray<uint> unitsWithVisionInCell;  
   
     public int UnitCount;  
@@ -162,7 +173,7 @@ public struct UpdateUnitVisibilityJob : IJob
 		}
 	}
 
-	private void UpdateUnitVisibility(GridCell pos, int radius, int radiusSquared bool add)  
+	private void UpdateUnitVisibility(GridCell pos, int radius, int radiusSquared bool increment)  
 	{
 		//...
 	}
@@ -170,6 +181,17 @@ public struct UpdateUnitVisibilityJob : IJob
 ```
 
 ## The Schedular
+
+To run the job, we need to create an instance of it and run '.Schedule()'. This returns a job handle, and at some point we need to call .'Complete()' on the handle to ensure the job is finished.
+
+Our 'GridVisibilityManager' starts a job early in the frame, and then uses LateUpdate() to complete the job.
+
+The data being used by the job, in this case the 'unitsToProcess' and 'unitsWithVisionInCell' cannot be used while the job is running. Attempting to do so will cause the job to be finished on the main thread. This will need to be considered when using jobs. 
+
+One strategy if the data needs to be freely available would be to create a copy that can be accessed at any time, and when the job finishes the data can be synced.
+
+In our case, we intend to use the data in another job, if this is the case we can use the previous job handle when scheduling the next job. This tells Unity that the next job depends on the previous one and the previous job must be completed first.
+
 
 ```c#
 public class GridVisibilityManager : MonoBehaviour
@@ -186,7 +208,7 @@ public class GridVisibilityManager : MonoBehaviour
 
 	private readonly HashSet<Unit> allUnits = new HashSet<Unit>();
 
-	private JobHandle _jobHandle;  
+	private JobHandle _updateLitCellsJobHandle;  
 	private bool _jobRunning;
 
 	public void RegisterUnit(Unit unit)  
@@ -211,9 +233,9 @@ public class GridVisibilityManager : MonoBehaviour
 	  
 	private void OnDestroy()  
 	{  
-	    if (!_jobHandle.IsCompleted)  
+	    if (!_updateLitCellsJobHandle.IsCompleted)  
 	    {        
-		    _jobHandle.Complete();  
+		    _updateLitCellsJobHandle.Complete();  
 	    }    
 	    
 	    unitsToProcess.Dispose();  
@@ -253,7 +275,7 @@ public class GridVisibilityManager : MonoBehaviour
 	            GridBounds = GridBounds  
 	        };  
 	        
-	        _jobHandle = job.Schedule();  
+	        _updateLitCellsJobHandle = job.Schedule();  
 	        _jobRunning = true;  
 	    }
 	}  
@@ -262,7 +284,7 @@ public class GridVisibilityManager : MonoBehaviour
 	{  
 	    if (!_jobRunning) return;
 	      
-	    _jobHandle.Complete();  
+	    _updateLitCellsJobHandle.Complete();  
 	    _jobRunning = false;  
 	}
 
@@ -271,7 +293,9 @@ public class GridVisibilityManager : MonoBehaviour
 
 # The Burst Compiler
 
-To test the speed of using the Burst compiler I turned off the optimisation to skip units that hadn't moved, and completed the job immediately to profile how long it was taking.
+To use the burst compiler, we just need to add the attribute [BurstCompile].
+
+To test the speed of using the Burst compiler I turned off the optimisation to skip units that hadn't moved, and completed the job immediately to more easily profile how long it was taking.
 
 I added around 20-30 units to the scene, and the above was taking around 0.5ms.
 
@@ -291,12 +315,16 @@ Even without the further improvement of ignoring cells that a unit will remain i
 
 # Updating the Texture
 
+To make use of the unit visibility info, we want to write the data into a texture, which can then be used by a shader. Writing to the texture can also be done in a job by creating a NativeArray using '.GetRawTextureData()'.
+
+On this same texture, we are using the red channel to determine which areas are buildable.
+
 ```c#
 [BurstCompile]  
 public struct UpdateGridTextureJob : IJobParallelFor  
 {  
-    [@ReadOnly] public NativeArray<bool> blockedCells;  
-    [@ReadOnly] public NativeArray<uint> unitsWithVisionInCell;  
+    [ReadOnly] public NativeArray<bool> blockedCells;  
+    [ReadOnly] public NativeArray<uint> unitsWithVisionInCell;  
     [WriteOnly] public NativeArray<Color32> texture;  
     
     public void Execute(int index)  
@@ -311,6 +339,8 @@ public struct UpdateGridTextureJob : IJobParallelFor
 }
 ```
 
+
+Because this job depends on the previous, we pass in the job handle '\_updateLitCellsJobHandle' when scheduling.
 
 ```c#
 
